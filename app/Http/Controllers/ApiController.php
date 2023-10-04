@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Libs\Action\AddContact;
 use App\Libs\Action\DeleteContact;
+use App\Libs\Action\GetContactById;
 use App\Libs\Action\UpdateContact;
 use App\Libs\Runner\NotebookControllerRunner;
 use App\Libs\Validate\ValidateNotebook;
@@ -35,9 +36,10 @@ class ApiController extends Controller
      * @var mixed $id Id контакта
      * @return object
      */
-    public function getNotebookById ($id) : object
+    public function getNotebookById ($id) : string
     {
-        return Notebook::find($id)->first();
+        $action = new GetContactById($id);
+        return $action->handle();
     }
 
     /**
@@ -53,6 +55,7 @@ class ApiController extends Controller
             new AddContact($request),
             new ValidateNotebook($request)
         );
+
         return $runner->run();
     }
 
@@ -70,6 +73,7 @@ class ApiController extends Controller
             new UpdateContact($request, $id),
             new ValidateUpdate($request, $id)
         );
+
         return $runner->run();
     }
 
@@ -82,6 +86,7 @@ class ApiController extends Controller
     public function deleteContact ($id): string
     {
         $action = new DeleteContact($id);
+
         return $action->handle();
     }
 }

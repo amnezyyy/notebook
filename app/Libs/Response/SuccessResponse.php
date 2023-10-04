@@ -4,11 +4,13 @@ namespace App\Libs\Response;
 
 class SuccessResponse
 {
-    public static function success (array $success) : string
+    public static function success ($success) : string
     {
-        return json_encode([
-            'status' => 'success',
-            'data' => $success,
-        ]);
+        return response()
+            ->json(
+            [
+                'status' => 'success',
+                'data' => $success,
+            ], 200);
     }
 }

@@ -10,4 +10,5 @@ class Notebook extends Model
     use HasFactory;
 
     protected $guarded = [];
+
 }
