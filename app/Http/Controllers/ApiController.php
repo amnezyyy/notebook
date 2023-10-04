@@ -23,7 +23,7 @@ class ApiController extends Controller
      */
     public function getNotebook (): object
     {
-        return Notebook::get();
+        return Notebook::get()->paginate(15);
     }
 
     /**
