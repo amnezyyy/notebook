@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Libs\Action\AddContact;
 use App\Libs\Action\DeleteContact;
 use App\Libs\Action\UpdateContact;
+use App\Libs\Runner\NotebookControllerRunner;
+use App\Libs\Validate\ValidateNotebook;
+use App\Libs\Validate\ValidateUpdate;
 use App\Models\Notebook;
 use Illuminate\Http\Request;
 
@@ -40,13 +43,17 @@ class ApiController extends Controller
     /**
      * Добавление контакта
      *
-     * @var Request $request Данные контакта
+     * @var Request $request Данные контакта для измениня
      * @return string
      */
     public function addContact (Request $request) : string
     {
-        $action = new AddContact();
-        return $action->heandle($request->all());
+        $request = $request->all();
+        $runner = new NotebookControllerRunner(
+            new AddContact($request),
+            new ValidateNotebook($request)
+        );
+        return $runner->run();
     }
 
     /**
@@ -58,8 +65,12 @@ class ApiController extends Controller
      */
     public function updateContactById (Request $request, $id) : string
     {
-        $action = new UpdateContact();
-        return $action->heandle($request->all(), $id);
+        $request = $request->all();
+        $runner = new NotebookControllerRunner(
+            new UpdateContact($request, $id),
+            new ValidateUpdate($request, $id)
+        );
+        return $runner->run();
     }
 
     /**
@@ -70,7 +81,7 @@ class ApiController extends Controller
      */
     public function deleteContact ($id): string
     {
-        $action = new DeleteContact();
-        return $action->heandle($id);
+        $action = new DeleteContact($id);
+        return $action->handle();
     }
 }

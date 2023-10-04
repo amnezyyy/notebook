@@ -2,38 +2,44 @@
 
 namespace App\Libs\Action;
 
+use App\Libs\Interfaces\ActionInterface;
 use App\Libs\Response\ErrorResponse;
 use App\Libs\Response\SuccessResponse;
 use App\Models\Notebook;
-use Exception;
 
 /**
  * Class DeleteContact
  *
- * @package App\Libs\Action
+ * @package App\Libs\ActionInterface
+ * @implements ActionInterface
  */
-class DeleteContact
+class DeleteContact implements ActionInterface
 {
+
+    /** @var int $id Id контакта */
+    private int $id;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * Удаление контакта из записной книжки
      *
-     * @var mixed $id Id контакта
      * @return string
      */
-    public function heandle ($id) : string
+    public function handle () : string
     {
-        try {
-            if (is_integer($id)) {
-                throw new Exception('Wrong Id!');
-            }
-            Notebook::find($id)->delete();
-
-            return SuccessResponse::success([
-                'deleted_contact' => 1,
+        if (is_null(Notebook::find($this->id))) {
+            return ErrorResponse::error([
+                'Wrong ID!',
             ]);
-        } catch (Exception $e) {
-            die(ErrorResponse::error($e->getMessage()));
         }
+        Notebook::find($this->id)->delete();
+
+        return SuccessResponse::success([
+            'deleted_contact' => 1,
+        ]);
     }
 }

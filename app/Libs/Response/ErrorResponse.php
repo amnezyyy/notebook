@@ -4,7 +4,7 @@ namespace App\Libs\Response;
 
 class ErrorResponse
 {
-    public static function error (string $error) : string
+    public static function error (array $error) : string
     {
         return json_encode([
             'status' => 'error',
